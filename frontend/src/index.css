@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/* Black */
+@font-face {
+  font-family: 'Avenir';
+  src: url('./assets/fonts/Avenir-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Heavy */
+@font-face {
+  font-family: 'Avenir';
+  src: url('./assets/fonts/Avenir-Heavy.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Regular */
+@font-face {
+  font-family: 'Avenir';
+  src: url('./assets/fonts/Avenir-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+ /* Book */
+@font-face {
+  font-family: 'Avenir';
+  src: url('./assets/fonts/Avenir-Book.ttf') format('truetype');
+  font-weight: 450;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Light */
+@font-face {
+  font-family: 'Avenir';
+  src: url('./assets/fonts/Avenir-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Italic */
+@font-face {
+  font-family: 'Avenir';
+  src: url('./assets/fonts/Avenir-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@theme {
+  --color-orange-primary: #E56C2C;
+  --color-orange-secondary: #EC5D2A;
+  --color-blue-primary: #2D69EE;
+  --color-blue-secondary: #3982EF;
+  --color-blue-tertiary: #0A225B;
+  --color-neutral-gray: #C5BDBB; 
+  --color-neutral-charcoal: #41413A;
+
+  --font-avenir: "Avenir", sans-serif;
+}
+
+body {
+  @apply font-avenir;
+}
