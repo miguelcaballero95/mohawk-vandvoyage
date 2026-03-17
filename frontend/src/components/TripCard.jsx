@@ -5,7 +5,7 @@ export const TripCard = (trip) => {
 
   return (
     <div className="flex shadow-md border border-gray-100 rounded-2xl p-3 gap-3 bg-white">
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <img
           src={image || PLACEHOLDER}
           alt={destination}
@@ -22,7 +22,7 @@ export const TripCard = (trip) => {
           ))}
         </div>
       </div>
-      <div className="flex flex-col justify-center items-end flex-shrink-0">
+      <div className="flex flex-col justify-center items-end shrink-0">
         {price ? (
           <p className="text-lg font-bold">${price}</p>
         ) : (
