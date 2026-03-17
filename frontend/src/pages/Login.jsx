@@ -1,5 +1,6 @@
 import r1 from '../assets/images/results1.jpg'
 import logo from '../assets/images/logowhite.svg'
+import { Link } from 'react-router';
 
 const Login = () => {
   return (
@@ -41,11 +42,11 @@ const Login = () => {
             </button>
           </form>
           <p className="text-center text-orange-primary">
-            <a href="/reset-password">Forgot Password?</a>
+            <Link to="/reset-password">Forgot Password?</Link>
           </p>
         </div>
         <p className="text-gray-600 text-center">
-          Don't have an account? <a href="/register" className="text-orange-primary">Sign Up</a>
+          Don't have an account? <Link to="/register" className="text-orange-primary">Sign Up</Link>
         </p>
       </div>
     </div>
