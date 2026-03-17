@@ -1,27 +1,25 @@
-import { FiMenu } from 'react-icons/fi'
-import logo from '../assets/images/logoblue.svg'
-import bgImage from '../assets/images/home-bg.jpg'
+import Nav from '../components/Nav';
 import { useNavigate } from 'react-router'
+import bgImage from '../assets/images/home-bg.jpg';
 import { fetchTravelTypes } from '../data';
 
 function Home() {
 
-  let navigate = useNavigate();
   const travelTypes = fetchTravelTypes();
+  const navigate = useNavigate();
 
-  function handleSearch() {
-    // TODO: Implement search functionality
+  async function handleSearch() {
+    // Todo store search params
     navigate('/results');
   }
+
   return (
-    <div className="w-full h-full min-h-screen p-8" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-      <header className="flex justify-between items-center">
-        <img src={logo} alt="Vandvoyage logo" className="w-40" />
-        {/* <button className="bg-white rounded-full p-2">
-          <FiMenu size={24} />
-        </button> */}
-      </header>
-      <main className="pt-14 lg:pt-24">
+    <>
+      <div
+        className="w-full h-full absolute inset-0 -z-10"
+        style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      </div>
+      <main className="pt-14 lg:pt-16 lg:max-w-4xl xl:max-w-7xl mx-auto">
         <div>
           <p className="text-white text-center text-4xl lg:text-5xl text-shadow-black font-bold">
             Find Your Next <br />
@@ -48,12 +46,14 @@ function Home() {
               id="additional-information"
               placeholder='Only pet friendly options' />
           </p>
-          <button className='bg-orange-primary text-white py-4 rounded-xl font-bold col-span-3' onClick={handleSearch}>
+          <button
+            onClick={handleSearch}
+            className='bg-orange-primary text-white py-4 rounded-xl font-bold col-span-3 cursor-pointer hover:bg-orange-secondary transition-colors duration-300'>
             Surprise Me!
           </button>
         </div>
       </main>
-    </div>
+    </>
   )
 }
 
