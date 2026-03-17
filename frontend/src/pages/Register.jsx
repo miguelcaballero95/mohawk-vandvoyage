@@ -1,5 +1,6 @@
 import r1 from '../assets/images/results2.jpg'
 import logo from '../assets/images/logowhite.svg'
+import { Link } from 'react-router';
 
 const Register = () => {
   return (
@@ -58,7 +59,7 @@ const Register = () => {
           </form>
         </div>
         <p className="text-gray-600 text-center">
-          Have an account? <a href="/login" className="text-orange-primary">Sign In</a>
+          Have an account? <Link to="/login" className="text-orange-primary">Sign In</Link>
         </p>
       </div>
     </div>
