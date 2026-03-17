@@ -44,7 +44,7 @@ function Home() {
               className='w-full text-blue-tertiary outline-0'
               name="additional_information"
               id="additional-information"
-              placeholder='Only pet friendly options' />
+              placeholder='Pet friendly, Hiking...' />
           </p>
           <button
             onClick={handleSearch}
