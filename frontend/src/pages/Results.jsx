@@ -1,9 +1,6 @@
-import { IoChevronBackSharp, IoSearchOutline } from "react-icons/io5"
-import { Link } from "react-router"
 import banner from '../assets/images/resultsheader.jpg'
 import { fetchTrips } from "../data"
 import { TripCard } from "../components/TripCard"
-import Nav from "../components/Nav"
 
 export const Results = () => {
 
