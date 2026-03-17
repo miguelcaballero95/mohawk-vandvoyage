@@ -15,7 +15,7 @@ const Nav = () => {
         </button>
         <div className='hidden md:flex md:gap-4 text-lg '>
           <a href="/" className='font-semibold'>Explore</a>
-          <a href="/login" className='font-semibold'>Login</a>
+          <a href="/login" className='font-semibold'>Sign In</a>
         </div>
       </div>
     </header>
