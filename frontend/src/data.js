@@ -29,16 +29,27 @@ export const fetchTrips = () => {
   ]
 }
 
-export const fetchTravelTypes = () => {
+export const getTravelTypes = () => {
   return [
-    'Adventure Travel',
-    'Cultural & Heritage Tourism',
-    'Eco-tourism',
-    'All-inclusive',
-    'Cruises',
-    'Family Vacations',
-    'Luxury Travel',
-    'Solo Travel',
-    'Wellness Travel'
+    { id: 'adventure-travel', type: 'Adventure Travel' },
+    { id: 'cultural-heritage-tourism', type: 'Cultural & Heritage Tourism' },
+    { id: 'eco-tourism', type: 'Eco-tourism' },
+    { id: 'all-inclusive', type: 'All-inclusive' },
+    { id: 'cruises', type: 'Cruises' },
+    { id: 'familty-vacations', type: 'Family Vacations' },
+    { id: 'luxury-travel', type: 'Luxury Travel' },
+    { id: 'solo-travel', type: 'Solo Travel' },
+    { id: 'wellness-travel', type: 'Wellness Travel' }
   ]
+}
+
+export const getCities = () => {
+  return [
+    { id: 'toronto', city: "Toronto", lat: 12, lon: 12 },
+    { id: 'hamilton', city: "Hamilton", lat: 12, lon: 12 },
+    { id: 'new-york', city: "New York", lat: 12, lon: 12 },
+    { id: 'chicago', city: "Chicago", lat: 12, lon: 12 },
+    { id: 'montreal', city: "Montreal", lat: 12, lon: 12 },
+    { id: 'vancouver', city: "Vancouver", lat: 12, lon: 12 },
+  ];
 }
