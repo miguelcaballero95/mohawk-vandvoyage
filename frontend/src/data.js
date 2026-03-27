@@ -1,44 +1,40 @@
-// Template data for testing purposes
-import r1 from './assets/images/results1.jpg'
-import r2 from './assets/images/results2.jpg'
-import r3 from './assets/images/results3.jpg'
+import axios from 'axios';
 
-export const fetchTrips = () => {
-  return [
-    {
-      id: 1,
-      destination: 'Barcelona',
-      tags: ['Eco-tourism'],
-      price: 500,
-      image: r1
-    },
-    {
-      id: 2,
-      destination: 'Lisbon',
-      tags: ['Adventure'],
-      price: 300,
-      image: r2
-    },
-    {
-      id: 3,
-      destination: 'Cancun',
-      tags: ['All-inclusive'],
-      price: 630,
-      image: r3
+export const getTrips = async (origin) => {
+  const city = getCities().filter(city => {
+    return city.id === origin;
+  })[0];
+
+  const { data } = await axios.get(`/.netlify/functions/getActivities`, {
+    params: {
+      lat: city.lat,
+      lon: city.lon
     }
+  });
+  return data;
+}
+
+export const getTravelTypes = () => {
+  return [
+    { id: 'adventure-travel', type: 'Adventure Travel' },
+    { id: 'cultural-heritage-tourism', type: 'Cultural & Heritage Tourism' },
+    { id: 'eco-tourism', type: 'Eco-tourism' },
+    { id: 'all-inclusive', type: 'All-inclusive' },
+    { id: 'cruises', type: 'Cruises' },
+    { id: 'familty-vacations', type: 'Family Vacations' },
+    { id: 'luxury-travel', type: 'Luxury Travel' },
+    { id: 'solo-travel', type: 'Solo Travel' },
+    { id: 'wellness-travel', type: 'Wellness Travel' }
   ]
 }
 
-export const fetchTravelTypes = () => {
+export const getCities = () => {
   return [
-    'Adventure Travel',
-    'Cultural & Heritage Tourism',
-    'Eco-tourism',
-    'All-inclusive',
-    'Cruises',
-    'Family Vacations',
-    'Luxury Travel',
-    'Solo Travel',
-    'Wellness Travel'
-  ]
+    { id: 'toronto', city: "Toronto", lat: 43.70011, lon: -79.4163 },
+    // { id: 'hamilton', city: "Hamilton", lat: 43.25011, lon: -79.84963 },
+    { id: 'new-york', city: "New York", lat: 40.71427, lon: -74.00597 },
+    { id: 'chicago', city: "Chicago", lat: 41.85003, lon: -87.65005 },
+    { id: 'montreal', city: "Montreal", lat: 45.50884, lon: -73.58781 },
+    { id: 'vancouver', city: "Vancouver", lat: 49.24966, lon: -123.11934 },
+  ];
 }

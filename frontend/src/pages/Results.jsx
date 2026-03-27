@@ -1,24 +1,126 @@
+import { useEffect, useState } from 'react';
 import banner from '../assets/images/resultsheader.jpg'
-import { fetchTrips } from "../data"
-import { TripCard } from "../components/TripCard"
+import TripsSkeleton from '../components/TripsSkeleton';
+import TripCard from '../components/TripCard';
+import { getCities, getTravelTypes, getTrips } from '../data';
+import { useSearchParams } from 'react-router';
+import '@splidejs/react-splide/css';
+import { Splide, SplideSlide } from '@splidejs/react-splide';
 
 export const Results = () => {
+  const [searchParams] = useSearchParams();
+  const origin = searchParams.get("origin");
+  const [trips, setTrips] = useState([]);
+  const [currentTrip, setCurrentTrip] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const tripsPerPage = 5;
 
-  const trips = fetchTrips();
+  function fetchTripDetails(tripId) {
+    const activity = trips.find(t => t.id === tripId)
+    setCurrentTrip(activity);
+  }
+
+  useEffect(() => {
+    async function fetchTrips() {
+      try {
+        const data = await getTrips(origin);
+        setTrips(data);
+      } catch (error) {
+        console.error("Error fetching trips:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchTrips();
+  }, [origin]);
+
+  const indexOfLastTrip = currentPage * tripsPerPage;
+  const indexOfFirstTrip = indexOfLastTrip - tripsPerPage;
+  const currentTrips = trips.slice(indexOfFirstTrip, indexOfLastTrip);
+  const totalPages = Math.ceil(trips.length / tripsPerPage);
+  const city = getCities().filter(city => {
+    return city.id === origin;
+  })[0];
 
   return (
     <div className="grow h-full lg:flex">
       <div className="mt-2 lg:w-1/2">
-        <img src={banner} alt="Results" className="w-full h-56 lg:h-full object-cover object-bottom" />
+        <img
+          src={banner}
+          alt="Results"
+          className="w-full h-56 lg:h-full object-cover object-bottom"
+        />
       </div>
-      <div className="p-4 lg:w-1/2">
-        <div>
-          <h2 className="font-semibold lg:font-bold text-lg lg:text-xl">Best Value Trips - From New York</h2>
-        </div>
-        <div className="mt-4 flex flex-col gap-4">
-          {trips.map(trip => <TripCard key={trip.id} {...trip} />)}
-        </div>
-      </div>
+
+      {!currentTrip &&
+        <div className="pl-8 px-30 lg:w-1/2">
+          <h2 className="font-semibold lg:font-bold text-lg lg:text-xl">
+            Best Trips - {city.city}
+          </h2>
+
+          <div className="flex flex-col gap-4 grow">
+            {loading ? (
+              <TripsSkeleton />
+            ) : (
+              currentTrips.map(trip => <TripCard key={trip.id} trip={trip} onClick={() => fetchTripDetails(trip.id)} />)
+            )}
+          </div>
+          {!loading && trips.length > 0 && (
+            <div className="mt-8 flex justify-center items-center gap-4">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(prev => prev - 1)}
+                className="px-4 py-2 bg-blue-primary text-white rounded disabled:opacity-50 cursor-pointer"
+              >
+                Previous
+              </button>
+
+              <span className="font-medium">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(prev => prev + 1)}
+                className="px-4 py-2 bg-blue-primary text-white rounded disabled:opacity-50 cursor-pointer"
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </div>}
+      {currentTrip &&
+        <div className="pl-8 px-30 lg:w-1/2">
+          <p className='underline text-sm mb-2 cursor-pointer' onClick={() => setCurrentTrip(null)}>
+            Go back to results
+          </p>
+          <h2 className="font-semibold lg:font-bold text-lg lg:text-xl">
+            {currentTrip.name}
+          </h2>
+          <div className="flex flex-wrap gap-1 mt-1.5">
+            {currentTrip.categories.map(cat => {
+              const category = getTravelTypes().find(type => type.id === cat);
+              return <span key={cat} className="text-xs text-orange-primary px-2 py-0.5 rounded-full bg-orange-primary/20 capitalize">{category.type}</span>
+            })}
+          </div>
+          <div className='pt-6'>
+            <p>Minimum duration: {currentTrip.minimumDuration}</p>
+            <p>Price: ${currentTrip.price.amount}</p>
+          </div>
+          <div className='py-4 text-justify' dangerouslySetInnerHTML={{ __html: currentTrip.description }}></div>
+          <div className='mb-4'>
+            <Splide aria-label="Activity Images" options={{
+              type: 'loop',
+            }}>
+              {currentTrip.pictures.map(image => (
+                <SplideSlide key={image}>
+                  <img src={image} />
+                </SplideSlide>
+              ))}
+            </Splide>
+          </div>
+        </div>}
     </div>
-  )
-}
+  );
+};
