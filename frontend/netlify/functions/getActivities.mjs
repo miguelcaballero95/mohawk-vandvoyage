@@ -57,8 +57,12 @@ export default async (req, context) => {
 
   const token = await getAccessToken();
 
+  const url = new URL(req.url);
+  const lat = url.searchParams.get("lat");
+  const lon = url.searchParams.get("lon");
+
   const response = await fetch(
-    "https://test.api.amadeus.com/v1/shopping/activities?latitude=43.70011&longitude=-79.4163&radius=20",
+    `https://test.api.amadeus.com/v1/shopping/activities?latitude=${lat}&longitude=${lon}&radius=20`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
 
