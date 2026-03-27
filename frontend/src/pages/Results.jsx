@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react';
 import banner from '../assets/images/resultsheader.jpg'
 import TripsSkeleton from '../components/TripsSkeleton';
 import TripCard from '../components/TripCard';
-import { getCities, getTravelTypes, getTrips } from '../data';
+import { getActivitiesBy, getCities, getTravelTypes } from '../data';
 import { useSearchParams } from 'react-router';
 import '@splidejs/react-splide/css';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 
 export const Results = () => {
+
   const [searchParams] = useSearchParams();
   const origin = searchParams.get("origin");
+  const category = searchParams.get("type");
+
   const [trips, setTrips] = useState([]);
   const [currentTrip, setCurrentTrip] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -24,8 +27,16 @@ export const Results = () => {
   useEffect(() => {
     async function fetchTrips() {
       try {
-        const data = await getTrips(origin);
-        setTrips(data);
+
+        // Use this to fetch data from Amadeus and Gemini
+        // const data = await getTrips(origin);
+        const data = getActivitiesBy(origin, category);
+
+        if (data.error) {
+          console.error(data.message);
+        } else {
+          setTrips(data);
+        }
       } catch (error) {
         console.error("Error fetching trips:", error);
       } finally {
@@ -33,7 +44,7 @@ export const Results = () => {
       }
     }
     fetchTrips();
-  }, [origin]);
+  }, [origin, category]);
 
   const indexOfLastTrip = currentPage * tripsPerPage;
   const indexOfFirstTrip = indexOfLastTrip - tripsPerPage;
