@@ -1,9 +1,7 @@
-import Nav from '../components/Nav';
 import { useNavigate } from 'react-router'
 import bgImage from '../assets/images/home-bg.jpg';
 import { getTravelTypes, getCities } from '../data';
 import { useForm } from 'react-hook-form';
-// import axios from 'axios';
 
 function Home() {
 
@@ -14,17 +12,12 @@ function Home() {
   async function handleSearch(data) {
     const searchParams = new URLSearchParams(data);
     const queryString = searchParams.toString();
-    // const { data } = await axios.get('/.netlify/functions/getActivities');
-    // console.log(data);
-    // const data = await response.json();
-    // console.log(response.json());
     navigate(`/results?${queryString}`);
   }
 
   const initialValues = {
     type: 'adventure-travel',
     origin: 'toronto',
-    additional: ''
   };
 
   const { register, handleSubmit } = useForm({ defaultValues: initialValues });
@@ -73,7 +66,6 @@ function Home() {
               name="additional_information"
               id="additional-information"
               placeholder='Pet friendly, Hiking...'
-              {...register('additional')}
             />
           </p>
           <button type='submit'
