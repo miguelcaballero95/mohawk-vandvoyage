@@ -1,8 +1,14 @@
 import { FiX, FiCheck } from 'react-icons/fi';
 import { getTravelTypes } from '../data';
 
-const FiltersSidebar = ({ isOpen, onClose }) => {
+const FiltersSidebar = ({ isOpen, onClose, activeCategories, setActiveCategories }) => {
+
   const travelTypes = getTravelTypes();
+
+  function handleCategoryChange(categoryId) {
+    const newCategories = activeCategories.includes(categoryId) ? activeCategories.filter(id => id !== categoryId) : [...activeCategories, categoryId];
+    setActiveCategories(newCategories);
+  }
 
   return (
     <>
@@ -26,7 +32,7 @@ const FiltersSidebar = ({ isOpen, onClose }) => {
                 {travelTypes.map((type) => (
                   <label key={type.id} className="flex items-center group cursor-pointer">
                     <div className="relative flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded group-hover:border-blue-primary transition-colors">
-                      <input type="checkbox" className="sr-only peer" />
+                      <input type="checkbox" className="sr-only peer" onChange={() => handleCategoryChange(type.id)} checked={activeCategories.includes(type.id)} />
                       <div className="absolute inset-0 bg-blue-primary scale-0 peer-checked:scale-100 transition-transform duration-200 rounded-[1px] flex items-center justify-center">
                         <FiCheck className="text-white text-xs" />
                       </div>

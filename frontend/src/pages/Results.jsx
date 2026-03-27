@@ -16,6 +16,7 @@ export const Results = () => {
 
   const [trips, setTrips] = useState([]);
   const [currentTrip, setCurrentTrip] = useState(null);
+  const [activeCategories, setActiveCategories] = useState([category]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -55,7 +56,7 @@ export const Results = () => {
 
   return (
     <div className="grow h-full lg:flex bg-gray-50/30 lg:p-4 lg:gap-4">
-      <FiltersSidebar isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
+      <FiltersSidebar isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} activeCategories={activeCategories} setActiveCategories={setActiveCategories} />
       <div className="lg:w-5/12 xl:w-1/2">
         {currentTrip &&
           <div className='mb-8 rounded-2xl overflow-hidden shadow-xl border border-white'>
