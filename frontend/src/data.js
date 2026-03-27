@@ -31,7 +31,7 @@ export const getTravelTypes = () => {
 export const getCities = () => {
   return [
     { id: 'toronto', city: "Toronto", lat: 43.70011, lon: -79.4163 },
-    { id: 'hamilton', city: "Hamilton", lat: 43.25011, lon: -79.84963 },
+    // { id: 'hamilton', city: "Hamilton", lat: 43.25011, lon: -79.84963 },
     { id: 'new-york', city: "New York", lat: 40.71427, lon: -74.00597 },
     { id: 'chicago', city: "Chicago", lat: 41.85003, lon: -87.65005 },
     { id: 'montreal', city: "Montreal", lat: 45.50884, lon: -73.58781 },

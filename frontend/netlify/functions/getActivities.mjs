@@ -1,8 +1,16 @@
+import { GoogleGenAI } from "@google/genai";
 import { getStore } from "@netlify/blobs";
+import { getTravelTypes } from "../../src/data";
 
 const CLIENT_ID = Netlify.env.get("AMADEUS_CLIENT_ID");
 const CLIENT_SECRET = Netlify.env.get("AMADEUS_CLIENT_SECRET");
+const GEMINI_API_KEY = Netlify.env.get("GEMINI_API_KEY");
+const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
+/**
+ * Refresh and retrieve Amadeus Access Token
+ * @returns token
+ */
 async function getAccessToken() {
 
   const store = getStore('amadeus');
@@ -45,6 +53,66 @@ async function getAccessToken() {
   return data.access_token;
 }
 
+async function geminiProcess(activities) {
+
+  const userFilter = "";
+
+  const payload = activities.map(act => ({
+    id: act.id,
+    name: act.name,
+    description: act.description
+  }));
+
+  const instructions = `
+    You are a strict data categorizer and filter. 
+    Your ONLY output must be a valid JSON array. No markdown, no markdown code blocks (\`\`\`json), and no extra text.
+    You will receive a list of activities, a list of valid categories, and a user search criterion.    
+    Rules:
+    1. Evaluate each activity against the user search criterion. If the activity DOES NOT match the user's request, ignore it completely and omit it from the output array.
+    2. If the activity matches the criterion, assign 1 or more category IDs that best fit its description. You must ONLY use the provided category IDs.
+    3. You must return strictly an array of objects matching this exact structure:
+    [
+      {
+        "id": "ACTIVITY_ID",
+        "categories": ["category-id-1", "category-id-2"]
+      }
+    ]
+    Do not alter the activity IDs and do not add any extra keys to the objects.`;
+
+  const prompt = `
+    User search criterion: "${userFilter || 'No filter, include all'}"    
+    Valid categories:
+    ${JSON.stringify(getTravelTypes())}
+    Activities to process:
+    ${JSON.stringify(payload)}`;
+
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: prompt,
+    config: {
+      systemInstruction: instructions,
+      responseMimeType: "application/json",
+      temperature: 0.1
+    }
+  });
+
+  const filteredActivities = JSON.parse(response.text);
+  const result = filteredActivities.map(act => {
+    const original = activities.find(a => a.id === act.id);
+    return {
+      ...original,
+      categories: act.categories
+    }
+  })
+
+  return result;
+}
+
+/**
+ * Main method, gets activities based on location
+ * Send data to Gemini to sort them by category
+ * @returns Data sorted
+ */
 export default async (req, context) => {
 
   if (req.method !== 'GET') {
@@ -62,11 +130,12 @@ export default async (req, context) => {
   const lon = url.searchParams.get("lon");
 
   const response = await fetch(
-    `https://test.api.amadeus.com/v1/shopping/activities?latitude=${lat}&longitude=${lon}&radius=20`,
+    `https://test.api.amadeus.com/v1/shopping/activities?latitude=${lat}&longitude=${lon}&radius=5`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
 
   const { data } = await response.json();
+  const result = await geminiProcess(data);
 
-  return new Response(JSON.stringify(data));
+  return new Response(JSON.stringify(result));
 };

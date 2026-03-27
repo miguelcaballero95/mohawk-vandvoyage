@@ -1,11 +1,12 @@
-const TripCard = ({ trip }) => {
+import { getTravelTypes } from "../data";
 
-  const { name, description, pictures, price } = trip;
+const TripCard = ({ trip, onClick }) => {
+
+  const { name, description, pictures, price, categories } = trip;
   const thumbnail = pictures.length > 0 ? pictures[0] : '';
-  const tags = ['Best value']
 
   return (
-    <div className="flex shadow-md border border-gray-100 rounded-2xl p-3 gap-3 bg-white">
+    <div className="flex shadow-md border border-gray-100 rounded-2xl p-3 gap-3 bg-white cursor-pointer" onClick={onClick}>
       <div className="shrink-0">
         <img
           src={thumbnail}
@@ -16,9 +17,11 @@ const TripCard = ({ trip }) => {
         <p className="font-semibold text-base">{name}</p>
         {description && <p className="text-xs text-gray-400 mt-0.5 line-clamp-2" dangerouslySetInnerHTML={{ __html: description }}></p>}
         <div className="flex flex-wrap gap-1 mt-1.5">
-          {tags.map(tag => (
-            <span key={tag} className="text-xs text-orange-primary px-2 py-0.5 rounded-full bg-orange-primary/20 capitalize">{tag}</span>
-          ))}
+          {categories.map(cat => {
+            const category = getTravelTypes().find(type => type.id === cat);
+            return <span key={cat} className="text-xs text-orange-primary px-2 py-0.5 rounded-full bg-orange-primary/20 capitalize">{category.type}</span>
+          }
+          )}
         </div>
       </div>
       <div className="flex flex-col justify-center items-end shrink-0 mx-8">
