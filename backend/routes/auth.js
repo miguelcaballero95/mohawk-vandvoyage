@@ -33,7 +33,15 @@ router.post("/firebase", async (req, res) => {
   }
 
   const { uid, email, name, firebase } = decoded;
-  const provider = firebase?.sign_in_provider === "google.com" ? "google" : "local";
+
+  // Map Firebase sign_in_provider to our auth_provider values
+  // Firebase uses "google.com", "facebook.com", "apple.com" as provider IDs
+  const providerMap = {
+    "google.com": "google",
+    "facebook.com": "facebook",
+    "apple.com": "apple",
+  };
+  const provider = providerMap[firebase?.sign_in_provider] || "local";
 
   try {
     let user = await User.findOne({ auth_provider_id: uid });
@@ -127,6 +135,45 @@ router.post("/reset-password", async (req, res) => {
     }
     console.error("Reset password error:", err);
     res.status(500).json({ error: "Server error during password reset" });
+  }
+});
+
+// PATCH /api/auth/language
+// Updates the user's preferred language
+router.patch("/language", async (req, res) => {
+  const { idToken, language } = req.body;
+
+  if (!idToken) {
+    return res.status(400).json({ error: "idToken is required" });
+  }
+
+  const supported = ["en", "es", "fr"];
+  if (!supported.includes(language)) {
+    return res.status(400).json({ error: "Supported languages: en, es, fr" });
+  }
+
+  let decoded;
+  try {
+    decoded = await admin.auth().verifyIdToken(idToken);
+  } catch (err) {
+    return res.status(401).json({ error: "Invalid or expired token" });
+  }
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { auth_provider_id: decoded.uid },
+      { preferred_language: language },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ user });
+  } catch (err) {
+    console.error("Language update error:", err);
+    res.status(500).json({ error: "Server error updating language" });
   }
 });
 

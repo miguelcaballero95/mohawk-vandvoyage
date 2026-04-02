@@ -1,59 +1,83 @@
-import { FiMenu } from 'react-icons/fi'
-import logo from '../assets/images/logoblue.svg'
-import bgImage from '../assets/images/home-bg.jpg'
 import { useNavigate } from 'react-router'
-import { fetchTravelTypes } from '../data';
+import bgImage from '../assets/images/home-bg.jpg';
+import { getTravelTypes, getCities } from '../data';
+import { useForm } from 'react-hook-form';
+import { useLanguage } from '../context/LanguageContext';
 
 function Home() {
+  const cities = getCities();
+  const travelTypes = getTravelTypes();
+  const navigate = useNavigate();
+  // Get translation function from language context
+  const { t } = useLanguage();
 
-  let navigate = useNavigate();
-  const travelTypes = fetchTravelTypes();
-
-  function handleSearch() {
-    // TODO: Implement search functionality
-    navigate('/results');
+  async function handleSearch(data) {
+    const searchParams = new URLSearchParams(data);
+    const queryString = searchParams.toString();
+    navigate(`/results?${queryString}`);
   }
+
+  const initialValues = {
+    type: 'adventure-travel',
+    origin: 'toronto',
+  };
+
+  const { register, handleSubmit } = useForm({ defaultValues: initialValues });
+
   return (
-    <div className="w-full h-screen p-8" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-      <header className="flex justify-between items-center">
-        <img src={logo} alt="Vandvoyage logo" className="w-40" />
-        <button className="bg-white rounded-full p-2">
-          <FiMenu size={24} />
-        </button>
-      </header>
-      <main className="pt-20">
+    <>
+      <div
+        className="w-full h-full absolute inset-0 -z-10"
+        style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      </div>
+      <main className="pt-14 lg:pt-16 lg:max-w-4xl xl:max-w-7xl mx-auto">
         <div>
-          <p className="text-white text-center text-4xl text-shadow-black font-bold">
-            Find Your Next <br />
-            <span className="underline decoration-orange-primary underline-offset-8">Adventure</span>
+          <p className="text-white text-center text-4xl lg:text-5xl text-shadow-black font-bold">
+            {t('findNextAdventure')} <br />
+            <span className="underline decoration-orange-primary underline-offset-8">{t('adventure')}</span>
           </p>
         </div>
-        <div className='mt-12 flex flex-col gap-6'>
-          <p className='bg-white px-3 py-4 rounded-xl'>
-            <label className='block mb-2 text-gray-500 text-sm' htmlFor="how-do-you-feel">What are you looking for?</label>
-            <select className='w-full text-blue-tertiary outline-0' name="feel" id="how-do-you-feel">
-              {travelTypes.map(type => <option key={type}>{type}</option>)}
+        <form onSubmit={handleSubmit(handleSearch)} className='mt-12 grid grid-cols-3 gap-6 max-w-sm mx-auto lg:max-w-5xl lg:bg-white lg:p-4 lg:rounded-2xl'>
+          <p className='bg-white px-3 py-4 rounded-xl col-span-3 lg:col-span-1 lg:border lg:border-gray-300'>
+            <label className='block mb-2 lg:mb-1 text-gray-500 text-sm' htmlFor="travel-type">{t('whatLookingFor')}</label>
+            <select
+              className='w-full text-blue-tertiary outline-0'
+              name="travel_type"
+              id="travel-type"
+              {...register('type', { required: "Field is required" })}
+            >
+              {/* Translate each travel type label using the translation key */}
+              {travelTypes.map(({ id }) => <option key={id} value={id}>{t(id)}</option>)}
             </select>
           </p>
-          <p className='bg-white px-3 py-4 rounded-xl'>
-            <label className='block mb-2 text-gray-500 text-sm' htmlFor="where-from">Where from?</label>
-            <select className='w-full text-blue-tertiary outline-0' name="from" id="where-from">
-              <option>New York</option>
-              <option>Toronto</option>
+          <p className='bg-white px-3 py-4 rounded-xl col-span-3 lg:col-span-1 lg:border lg:border-gray-300'>
+            <label className='block mb-2 text-gray-500 text-sm' htmlFor="origin">{t('where')}</label>
+            <select
+              className='w-full text-blue-tertiary outline-0'
+              name="origin"
+              id="origin"
+              {...register('origin', { required: "Field is required" })}
+            >
+              {cities.map(({ id, city }) => <option key={id} value={id}>{city}</option>)}
             </select>
           </p>
-          <p className='bg-white px-3 py-4 rounded-xl'>
-            <label className='block mb-2 text-gray-500 text-sm' htmlFor="reservation-type">Type of reservation</label>
-            <select className='w-full text-blue-tertiary outline-0' name="reservation" id="reservation-type">
-              <option>Hotel</option>
-            </select>
+          <p className='bg-white px-3 py-4 rounded-xl col-span-3 lg:col-span-1 lg:border lg:border-gray-300'>
+            <label className='block mb-2 text-gray-500 text-sm' htmlFor="additional-information">{t('anythingElse')}</label>
+            <input
+              type="text"
+              className='w-full text-blue-tertiary outline-0'
+              name="additional_information"
+              id="additional-information"
+              placeholder={t('anythingElsePlaceholder')}
+            />
           </p>
-          <button className='bg-orange-primary text-white py-4 rounded-xl font-bold' onClick={handleSearch}>
-            Surprise Me!
+          <button type='submit'
+            className='bg-orange-primary text-white py-4 rounded-xl font-bold col-span-3 cursor-pointer hover:bg-orange-secondary transition-colors duration-300'>
+            {t('surpriseMe')}
           </button>
-        </div>
+        </form>
       </main>
-    </div>
+    </>
   )
 }
 
