@@ -37,7 +37,7 @@ const FiltersSidebar = ({ isOpen, onClose, activeCategories, setActiveCategories
                         <FiCheck className="text-white text-xs" />
                       </div>
                     </div>
-                    <span className="ml-3 text-neutral-charcoal font-medium group-hover:text-blue-primary transition-colors">{type.type}</span>
+                    <span className="ml-3 text-neutral-charcoal font-medium group-hover:text-blue-primary transition-colors">{type.label}</span>
                   </label>
                 ))}
               </div>

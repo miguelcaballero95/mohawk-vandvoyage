@@ -1,22 +1,21 @@
 import { useEffect, useState } from 'react';
 import TripsSkeleton from '../components/TripsSkeleton';
 import TripCard from '../components/TripCard';
-import { getActivitiesBy, getCities, getTravelTypes } from '../data';
-import { useSearchParams } from 'react-router';
+import { getActivitiesBy, getTravelTypes } from '../data';
 import '@splidejs/react-splide/css';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import FiltersSidebar from '../components/FiltersSidebar';
-import { FiFilter, FiChevronLeft, FiClock, FiDollarSign, FiMapPin } from 'react-icons/fi';
+import { FiFilter, FiChevronLeft, FiClock, FiDollarSign } from 'react-icons/fi';
+import { useFilters } from '../stores/filters.store';
 
 export const Results = () => {
 
-  const [searchParams] = useSearchParams();
-  const origin = searchParams.get("origin");
-  const category = searchParams.get("type");
+  const { cities, travelTypes } = useFilters();
 
   const [trips, setTrips] = useState([]);
+
   const [currentTrip, setCurrentTrip] = useState(null);
-  const [activeCategories, setActiveCategories] = useState([category]);
+  const [activeCategories, setActiveCategories] = useState(travelTypes);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -28,17 +27,13 @@ export const Results = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+
   useEffect(() => {
     async function fetchTrips() {
       try {
-        setLoading(true);
-        const data = getActivitiesBy(origin, category);
-
-        if (data.error) {
-          console.error(data.message);
-        } else {
-          setTrips(data);
-        }
+        setLoading(false);
+        const data = getActivitiesBy(cities, travelTypes);
+        setTrips(data);
       } catch (error) {
         console.error("Error fetching trips:", error);
       } finally {
@@ -46,17 +41,20 @@ export const Results = () => {
       }
     }
     fetchTrips();
-  }, [origin, category]);
+  }, [cities, travelTypes]);
 
   const indexOfLastTrip = currentPage * tripsPerPage;
   const indexOfFirstTrip = indexOfLastTrip - tripsPerPage;
   const currentTrips = trips.slice(indexOfFirstTrip, indexOfLastTrip);
   const totalPages = Math.ceil(trips.length / tripsPerPage);
-  const city = getCities().find(c => c.id === origin) || { city: origin };
 
   return (
     <div className="grow h-full lg:flex bg-gray-50/30 lg:p-4 lg:gap-4">
-      <FiltersSidebar isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} activeCategories={activeCategories} setActiveCategories={setActiveCategories} />
+      <FiltersSidebar
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        activeCategories={activeCategories}
+        setActiveCategories={setActiveCategories} />
       <div className="lg:w-5/12 xl:w-1/2">
         {currentTrip &&
           <div className='mb-8 rounded-2xl overflow-hidden shadow-xl border border-white'>
@@ -68,19 +66,23 @@ export const Results = () => {
             }}>
               {currentTrip.pictures.map((image, index) => (
                 <SplideSlide key={index}>
-                  <img src={image} className="w-full lg:h-[calc(100vh-120px)] min-h-100 max-h-175 object-cover" alt={`${currentTrip.name} ${index + 1}`} />
+                  <img src={image}
+                    className="w-full lg:h-[calc(100vh-120px)] min-h-100 max-h-175 object-cover"
+                    alt={`${currentTrip.name} ${index + 1}`} />
                 </SplideSlide>
               ))}
             </Splide>
-          </div>}
+          </div>
+        }
         {!currentTrip &&
           <div className="relative h-64 lg:h-[calc(100vh-120px)] min-h-100 max-h-175 w-full overflow-hidden rounded-b-3xl lg:rounded-3xl shadow-xl group top-4">
             <img
-              src={city.image}
+              src="https://thetravelexpert.ie/wp-content/uploads/2021/07/V3.0.jpg"
               alt="Results"
               className="w-full h-full object-cover object-bottom transition-transform duration-700 group-hover:scale-105"
             />
-          </div>}
+          </div>
+        }
       </div>
       <div className="flex-1 lg:overflow-y-auto">
         {!currentTrip ? (
@@ -88,7 +90,7 @@ export const Results = () => {
             <div className="flex items-center justify-between gap-4 mb-8">
               <div>
                 <h1 className="text-2xl lg:text-3xl font-bold text-blue-tertiary tracking-tight">
-                  Discover {city.city}
+                  Discover new experiences
                 </h1>
                 <p className="text-gray-500 text-sm font-medium mt-0.5">Found {trips.length} experiences for you.</p>
               </div>
@@ -170,7 +172,7 @@ export const Results = () => {
                 const category = getTravelTypes().find(type => type.id === cat);
                 return (
                   <span key={cat} className="text-[10px] font-bold tracking-wider uppercase text-orange-primary px-3 py-1 rounded-full bg-orange-primary/10">
-                    {category?.type || cat}
+                    {category?.label || cat}
                   </span>
                 )
               })}

@@ -19,7 +19,7 @@ const TripCard = ({ trip, onClick }) => {
         <div className="flex flex-wrap gap-1 mt-1.5">
           {categories.map(cat => {
             const category = getTravelTypes().find(type => type.id === cat);
-            return <span key={cat} className="text-xs text-orange-primary px-2 py-0.5 rounded-full bg-orange-primary/20 capitalize">{category.type}</span>
+            return <span key={cat} className="text-xs text-orange-primary px-2 py-0.5 rounded-full bg-orange-primary/20 capitalize">{category.label}</span>
           }
           )}
         </div>
