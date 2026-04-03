@@ -17,6 +17,8 @@ export const useFilters = create((set) => ({
     }
     return { travelTypes: [...state.travelTypes, travelType] };
   }),
+  setCities: (cities) => set({ cities }),
+  setTravelTypes: (travelTypes) => set({ travelTypes }),
   setMinPrice: (price) => set({ minPrice: price }),
   setMaxPrice: (price) => set({ maxPrice: price }),
   clearFilters: () => set({
