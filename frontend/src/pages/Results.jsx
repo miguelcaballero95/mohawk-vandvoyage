@@ -5,7 +5,7 @@ import { getActivitiesBy, getCities, getTravelTypes } from '../data';
 import '@splidejs/react-splide/css';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import FiltersSidebar from '../components/FiltersSidebar';
-import { FiFilter, FiChevronLeft, FiClock, FiDollarSign } from 'react-icons/fi';
+import { FiFilter, FiChevronLeft, FiClock, FiDollarSign, FiBookmark } from 'react-icons/fi';
 import { useFilters } from '../stores/filters.store';
 
 export const Results = () => {
@@ -188,13 +188,19 @@ export const Results = () => {
           </div>
         ) : (
           <div className="px-4 lg:px-8 py-6 max-w-4xl mx-auto animate-in fade-in slide-in-from-right-4 duration-500">
-            <button
-              className='flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-blue-primary transition-colors mb-6 group uppercase tracking-wider cursor-pointer'
-              onClick={() => setCurrentTrip(null)}
-            >
-              <FiChevronLeft className="transition-transform group-hover:-translate-x-1" />
-              Back to results
-            </button>
+            <div className="flex items-center justify-between mb-6">
+              <button
+                className='flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-blue-primary transition-colors group uppercase tracking-wider cursor-pointer'
+                onClick={() => setCurrentTrip(null)}
+              >
+                <FiChevronLeft className="transition-transform group-hover:-translate-x-1" />
+                Back to results
+              </button>
+              <button className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 hover:text-orange-primary transition-colors uppercase tracking-widest cursor-pointer group">
+                <FiBookmark size={14} className="transition-transform group-hover:scale-110" />
+                Save experience
+              </button>
+            </div>
             <h2 className="text-3xl font-bold text-blue-tertiary tracking-tight leading-tight mb-4">
               {currentTrip.name}
             </h2>
