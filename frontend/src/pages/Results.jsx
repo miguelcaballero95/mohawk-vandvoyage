@@ -2,21 +2,19 @@ import { useEffect, useState } from 'react';
 import TripsSkeleton from '../components/TripsSkeleton';
 import TripCard from '../components/TripCard';
 import { getActivitiesBy, getCities, getTravelTypes } from '../data';
-import { useSearchParams } from 'react-router';
 import '@splidejs/react-splide/css';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import FiltersSidebar from '../components/FiltersSidebar';
-import { FiFilter, FiChevronLeft, FiClock, FiDollarSign, FiMapPin } from 'react-icons/fi';
+import { FiFilter, FiChevronLeft, FiClock, FiDollarSign } from 'react-icons/fi';
+import { useFilters } from '../stores/filters.store';
 
 export const Results = () => {
 
-  const [searchParams] = useSearchParams();
-  const origin = searchParams.get("origin");
-  const category = searchParams.get("type");
+  const { cities, travelTypes, minPrice, maxPrice } = useFilters();
 
   const [trips, setTrips] = useState([]);
+
   const [currentTrip, setCurrentTrip] = useState(null);
-  const [activeCategories, setActiveCategories] = useState([category]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -28,17 +26,13 @@ export const Results = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+
   useEffect(() => {
     async function fetchTrips() {
       try {
         setLoading(true);
-        const data = getActivitiesBy(origin, category);
-
-        if (data.error) {
-          console.error(data.message);
-        } else {
-          setTrips(data);
-        }
+        const data = getActivitiesBy(cities, travelTypes, minPrice, maxPrice);
+        setTrips(data);
       } catch (error) {
         console.error("Error fetching trips:", error);
       } finally {
@@ -46,17 +40,21 @@ export const Results = () => {
       }
     }
     fetchTrips();
-  }, [origin, category]);
+  }, [cities, travelTypes, minPrice, maxPrice]);
 
   const indexOfLastTrip = currentPage * tripsPerPage;
   const indexOfFirstTrip = indexOfLastTrip - tripsPerPage;
   const currentTrips = trips.slice(indexOfFirstTrip, indexOfLastTrip);
   const totalPages = Math.ceil(trips.length / tripsPerPage);
-  const city = getCities().find(c => c.id === origin) || { city: origin };
+
+  const activeFiltersCount = cities.length + travelTypes.length + (minPrice ? 1 : 0) + (maxPrice ? 1 : 0);
 
   return (
     <div className="grow h-full lg:flex bg-gray-50/30 lg:p-4 lg:gap-4">
-      <FiltersSidebar isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} activeCategories={activeCategories} setActiveCategories={setActiveCategories} />
+      <FiltersSidebar
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+      />
       <div className="lg:w-5/12 xl:w-1/2">
         {currentTrip &&
           <div className='mb-8 rounded-2xl overflow-hidden shadow-xl border border-white'>
@@ -68,36 +66,71 @@ export const Results = () => {
             }}>
               {currentTrip.pictures.map((image, index) => (
                 <SplideSlide key={index}>
-                  <img src={image} className="w-full lg:h-[calc(100vh-120px)] min-h-100 max-h-175 object-cover" alt={`${currentTrip.name} ${index + 1}`} />
+                  <img src={image}
+                    className="w-full lg:h-[calc(100vh-120px)] min-h-100 max-h-175 object-cover"
+                    alt={`${currentTrip.name} ${index + 1}`} />
                 </SplideSlide>
               ))}
             </Splide>
-          </div>}
+          </div>
+        }
         {!currentTrip &&
           <div className="relative h-64 lg:h-[calc(100vh-120px)] min-h-100 max-h-175 w-full overflow-hidden rounded-b-3xl lg:rounded-3xl shadow-xl group top-4">
             <img
-              src={city.image}
+              src="https://thetravelexpert.ie/wp-content/uploads/2021/07/V3.0.jpg"
               alt="Results"
               className="w-full h-full object-cover object-bottom transition-transform duration-700 group-hover:scale-105"
             />
-          </div>}
+          </div>
+        }
       </div>
       <div className="flex-1 lg:overflow-y-auto">
         {!currentTrip ? (
           <div className="px-4 lg:px-8 py-6 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center justify-between gap-4 mb-8">
+            <div className="flex items-start justify-between gap-4 mb-8">
               <div>
                 <h1 className="text-2xl lg:text-3xl font-bold text-blue-tertiary tracking-tight">
-                  Discover {city.city}
+                  Discover new experiences
                 </h1>
-                <p className="text-gray-500 text-sm font-medium mt-0.5">Found {trips.length} experiences for you.</p>
+                <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                  <p className="text-gray-500 text-sm font-medium">Found {trips.length} experiences for you.</p>
+                  {activeFiltersCount > 0 && (
+                    <div className="flex flex-wrap gap-1.5 ml-1">
+                      {cities.map(cityId => (
+                        <button key={cityId} onClick={() => setIsFilterOpen(true)} className="text-[10px] font-bold px-2 py-0.5 bg-blue-primary/5 text-blue-primary rounded-full border border-blue-primary/10 hover:bg-blue-primary/10 transition-colors">
+                          {getCities().find(c => c.id === cityId)?.label}
+                        </button>
+                      ))}
+                      {travelTypes.map(typeId => (
+                        <button key={typeId} onClick={() => setIsFilterOpen(true)} className="text-[10px] font-bold px-2 py-0.5 bg-orange-primary/5 text-orange-primary rounded-full border border-orange-primary/10 hover:bg-orange-primary/10 transition-colors">
+                          {getTravelTypes().find(t => t.id === typeId)?.label}
+                        </button>
+                      ))}
+                      {minPrice && (
+                        <button onClick={() => setIsFilterOpen(true)} className="text-[10px] font-bold px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full border border-gray-200 hover:bg-gray-200 transition-colors">
+                          Min: ${minPrice}
+                        </button>
+                      )}
+                      {maxPrice && (
+                        <button onClick={() => setIsFilterOpen(true)} className="text-[10px] font-bold px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full border border-gray-200 hover:bg-gray-200 transition-colors">
+                          Max: ${maxPrice}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
               <button
                 onClick={() => setIsFilterOpen(true)}
-                className="flex items-center justify-center gap-2 px-5 py-2 bg-white border border-gray-200 rounded-full text-sm font-bold text-blue-tertiary hover:border-blue-primary hover:text-blue-primary transition-all shadow-sm active:scale-95"
+                className="relative flex items-center justify-center gap-2 px-5 py-2 bg-white border border-gray-200 rounded-full text-sm font-bold text-blue-tertiary hover:border-blue-primary hover:text-blue-primary transition-all shadow-sm active:scale-95"
               >
                 <FiFilter className="text-blue-primary" />
                 <span>Filters</span>
+                {activeFiltersCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-orange-primary text-white text-[10px] flex items-center justify-center rounded-full shadow-lg ring-2 ring-white">
+                    {activeFiltersCount}
+                  </span>
+                )}
               </button>
             </div>
 
@@ -170,7 +203,7 @@ export const Results = () => {
                 const category = getTravelTypes().find(type => type.id === cat);
                 return (
                   <span key={cat} className="text-[10px] font-bold tracking-wider uppercase text-orange-primary px-3 py-1 rounded-full bg-orange-primary/10">
-                    {category?.type || cat}
+                    {category?.label || cat}
                   </span>
                 )
               })}
