@@ -9,11 +9,16 @@ if (!admin.apps.length) {
   let credential;
   if (process.env.FIREBASE_SERVICE_ACCOUNT) {
     // Production: full service account JSON stored as an env variable
-    // Fix double-escaped newlines in private_key that occur when pasting into Render
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    let serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    // Handle double-stringified JSON (pasted with surrounding quotes in Render)
+    if (typeof serviceAccount === 'string') {
+      serviceAccount = JSON.parse(serviceAccount);
+    }
+    // Fix double-escaped newlines in private_key
     if (serviceAccount.private_key) {
       serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
     }
+    console.log('Firebase service account project_id:', serviceAccount.project_id);
     credential = admin.credential.cert(serviceAccount);
   } else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
     // Local dev: path to the JSON file
