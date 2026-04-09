@@ -5,6 +5,7 @@ import TravelTypeSelect from '../components/home/TravelTypeSelect';
 import DestinationSelect from '../components/home/DestinationSelect';
 import { useLanguage } from '../context/LanguageContext';
 import { useFilters } from '../stores/filters.store';
+import TextField from '@mui/material/TextField';
 
 function Home() {
   const navigate = useNavigate();
@@ -35,24 +36,9 @@ function Home() {
           </p>
         </div>
         <form onSubmit={handleSubmit(handleSearch)} className='mt-12 grid grid-cols-3 gap-6 max-w-sm mx-auto lg:max-w-5xl lg:bg-white lg:p-4 lg:rounded-2xl'>
-          {/* Travel type autocomplete with MUI */}
-          <p className='bg-white px-3 py-4 rounded-xl col-span-3 lg:col-span-1 lg:border lg:border-gray-300'>
-            <TravelTypeSelect control={control} />
-          </p>
-          {/* Destination autocomplete with MUI */}
-          <p className='bg-white px-3 py-4 rounded-xl col-span-3 lg:col-span-1 lg:border lg:border-gray-300'>
-            <DestinationSelect control={control} />
-          </p>
-          <p className='bg-white px-3 py-4 rounded-xl col-span-3 lg:col-span-1 lg:border lg:border-gray-300'>
-            <label className='block mb-2 text-gray-500 text-sm' htmlFor="additional-information">{t('anythingElse')}</label>
-            <input
-              type="text"
-              className='w-full text-blue-tertiary outline-0'
-              name="additional_information"
-              id="additional-information"
-              placeholder={t('anythingElsePlaceholder')}
-            />
-          </p>
+          <TravelTypeSelect control={control} />
+          <DestinationSelect control={control} />
+          <TextField label="Anything else?" variant="outlined" />
           <button type='submit'
             className='bg-orange-primary text-white py-4 rounded-xl font-bold col-span-3 cursor-pointer hover:bg-orange-secondary transition-colors duration-300'>
             {t('surpriseMe')}

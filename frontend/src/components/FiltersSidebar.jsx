@@ -91,7 +91,8 @@ const FiltersSidebar = ({ isOpen, onClose }) => {
                   setLocalCities(newValue.map(city => city.id));
                 }}
                 renderInput={(params) => (
-                  <TextField
+                  <
+                    TextField
                     {...params}
                     placeholder="Search cities..."
                     sx={{
