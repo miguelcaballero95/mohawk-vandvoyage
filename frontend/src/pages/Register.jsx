@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router';
 import { useLanguage } from '../context/LanguageContext';
 import { auth } from '../config/firebase';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { apiUrl } from '../config/api';
 
 const Register = () => {
   const { t } = useLanguage();
@@ -33,13 +34,17 @@ const Register = () => {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       if (name) await updateProfile(result.user, { displayName: name });
-      // Sync user to MongoDB
-      const idToken = await result.user.getIdToken();
-      await fetch('/api/auth/firebase', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken }),
-      });
+      // Try to sync user to MongoDB (best-effort — don't block on failure)
+      try {
+        const idToken = await result.user.getIdToken();
+        await fetch(apiUrl('/api/auth/firebase'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken }),
+        });
+      } catch {
+        // Backend unavailable — user is still registered via Firebase
+      }
       navigate('/');
     } catch (err) {
       switch (err.code) {

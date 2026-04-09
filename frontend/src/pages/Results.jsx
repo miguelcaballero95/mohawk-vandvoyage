@@ -10,6 +10,7 @@ import { useFilters } from '../stores/filters.store';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../stores/auth.store';
 import { useNavigate } from 'react-router';
+import { apiUrl } from '../config/api';
 
 export const Results = () => {
   const { t } = useLanguage();
@@ -37,7 +38,7 @@ export const Results = () => {
   useEffect(() => {
     if (!user) return;
     user.getIdToken().then(idToken => {
-      fetch(`/api/saved-trips?idToken=${idToken}`)
+      fetch(apiUrl(`/api/saved-trips?idToken=${idToken}`))
         .then(r => r.json())
         .then(data => {
           if (data.savedTrips) {
@@ -63,7 +64,7 @@ export const Results = () => {
       const isSaved = savedIds.has(currentTrip.id);
 
       if (isSaved) {
-        await fetch(`/api/saved-trips/${currentTrip.id}`, {
+        await fetch(apiUrl(`/api/saved-trips/${currentTrip.id}`), {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ idToken }),
@@ -75,7 +76,7 @@ export const Results = () => {
           return;
         }
         console.log('Saving trip — name:', currentTrip.name, '| id:', currentTrip.id, '| type:', typeof currentTrip.id);
-        const res = await fetch('/api/saved-trips', {
+        const res = await fetch(apiUrl('/api/saved-trips'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

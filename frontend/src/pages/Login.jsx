@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router';
 import { useLanguage } from '../context/LanguageContext';
 import { auth, googleProvider } from '../config/firebase';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { apiUrl } from '../config/api';
 
 const Login = () => {
   const { t } = useLanguage();
@@ -28,23 +29,20 @@ const Login = () => {
   const handleGoogleSignIn = async () => {
     try {
       setError(null);
-      // Open Google sign-in popup via Firebase
       const result = await signInWithPopup(auth, googleProvider);
-      // Get the Firebase ID token to send to our backend
+      // Firebase auth succeeded — user is logged in regardless of backend sync
       const idToken = await result.user.getIdToken();
-      // Send token to backend for user creation/lookup
-      const response = await fetch('/api/auth/firebase', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken }),
-      });
-      const text = await response.text();
-      const data = text ? JSON.parse(text) : {};
-      if (!response.ok || data.error) {
-        setError(data.error || `Server error (${response.status})`);
-      } else {
-        window.location.href = '/';
+      // Try to sync user to MongoDB (best-effort — don't block on failure)
+      try {
+        await fetch(apiUrl('/api/auth/firebase'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken }),
+        });
+      } catch {
+        // Backend unavailable — user is still authenticated via Firebase
       }
+      window.location.href = '/';
     } catch (err) {
       console.error('Google sign-in error:', err);
       setError(err.message);

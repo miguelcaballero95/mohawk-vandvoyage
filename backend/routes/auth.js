@@ -6,13 +6,30 @@ const User = require("../models/User");
 
 // Initialize Firebase Admin SDK once
 if (!admin.apps.length) {
-  const credential = process.env.FIREBASE_SERVICE_ACCOUNT_PATH
-    ? admin.credential.cert(require(path.resolve(process.env.FIREBASE_SERVICE_ACCOUNT_PATH)))
-    : admin.credential.cert({
+  let credential;
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    // Production: full service account JSON stored as an env variable
+    let serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    // Handle double-stringified JSON (pasted with surrounding quotes in Render)
+    if (typeof serviceAccount === 'string') {
+      serviceAccount = JSON.parse(serviceAccount);
+    }
+    // Fix double-escaped newlines in private_key
+    if (serviceAccount.private_key) {
+      serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+    }
+    console.log('Firebase service account project_id:', serviceAccount.project_id);
+    credential = admin.credential.cert(serviceAccount);
+  } else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
+    // Local dev: path to the JSON file
+    credential = admin.credential.cert(require(path.resolve(process.env.FIREBASE_SERVICE_ACCOUNT_PATH)));
+  } else {
+    credential = admin.credential.cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
     });
+  }
   admin.initializeApp({ credential });
 }
 
