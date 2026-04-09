@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router';
 import { useLanguage } from '../context/LanguageContext';
 import { auth, googleProvider } from '../config/firebase';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { apiUrl } from '../config/api';
 
 const Login = () => {
   const { t } = useLanguage();
@@ -33,7 +34,7 @@ const Login = () => {
       // Get the Firebase ID token to send to our backend
       const idToken = await result.user.getIdToken();
       // Send token to backend for user creation/lookup
-      const response = await fetch('/api/auth/firebase', {
+      const response = await fetch(apiUrl('/api/auth/firebase'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idToken }),

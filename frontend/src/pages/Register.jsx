@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router';
 import { useLanguage } from '../context/LanguageContext';
 import { auth } from '../config/firebase';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { apiUrl } from '../config/api';
 
 const Register = () => {
   const { t } = useLanguage();
@@ -35,7 +36,7 @@ const Register = () => {
       if (name) await updateProfile(result.user, { displayName: name });
       // Sync user to MongoDB
       const idToken = await result.user.getIdToken();
-      await fetch('/api/auth/firebase', {
+      await fetch(apiUrl('/api/auth/firebase'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idToken }),

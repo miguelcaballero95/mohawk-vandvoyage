@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { FiBookmark, FiMapPin, FiTrash2 } from 'react-icons/fi';
 import { useAuth } from '../stores/auth.store';
 import { useLanguage } from '../context/LanguageContext';
+import { apiUrl } from '../config/api';
 
 const SavedTrips = () => {
   const { user, loading: authLoading } = useAuth();
@@ -24,7 +25,7 @@ const SavedTrips = () => {
   useEffect(() => {
     if (!user) return;
     user.getIdToken().then(idToken => {
-      fetch(`/api/saved-trips?idToken=${idToken}`)
+      fetch(apiUrl(`/api/saved-trips?idToken=${idToken}`))
         .then(r => r.json())
         .then(data => {
           if (data.savedTrips) setSavedTrips(data.savedTrips);
@@ -39,7 +40,7 @@ const SavedTrips = () => {
     setRemovingId(activityId);
     try {
       const idToken = await user.getIdToken();
-      await fetch(`/api/saved-trips/${activityId}`, {
+      await fetch(apiUrl(`/api/saved-trips/${activityId}`), {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idToken }),
