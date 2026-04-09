@@ -14,13 +14,14 @@ app.use(express.json());
 connectDB();
 
 // Health check route
-app.get("/api/health", (req, res) => {
+app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", service: "vandvoyage" });
 });
 
 // Routes
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/destinations", require("./routes/destinations"));
+app.use("/api/saved-trips", require("./routes/savedTrips"));
 
 app.listen(PORT, () => {
   console.log(`VandVoyage server running on port ${PORT}`);

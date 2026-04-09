@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema(
     },
     auth_provider: {
       type: String,
-      enum: ["local", "google", "apple"],
+      enum: ["local", "google", "apple", "facebook"],
       default: "local",
     },
     auth_provider_id: {

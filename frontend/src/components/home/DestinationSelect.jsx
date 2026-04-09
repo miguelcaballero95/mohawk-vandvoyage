@@ -3,12 +3,13 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { getCities } from '../../data';
 import { useState } from 'react';
 import { Controller } from 'react-hook-form';
+import { useLanguage } from '../../context/LanguageContext';
 
 const cities = getCities();
 
 const DestinationSelect = ({ control }) => {
-
   const [open, setOpen] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <Controller
@@ -35,8 +36,9 @@ const DestinationSelect = ({ control }) => {
               setOpen(false);
             }
           }}
+          getOptionLabel={(option) => option.label || ""}
           renderInput={(params) => (
-            <TextField {...params} label="Where to?" />
+            <TextField {...params} label={t('where')} />
           )}
         />
       )}

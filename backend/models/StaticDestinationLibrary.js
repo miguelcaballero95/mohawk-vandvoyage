@@ -1,5 +1,14 @@
 const mongoose = require("mongoose");
 
+const translationSchema = new mongoose.Schema(
+  {
+    city: { type: String, trim: true },
+    country: { type: String, trim: true },
+    summary: { type: String, default: "" },
+  },
+  { _id: false }
+);
+
 const staticDestinationLibrarySchema = new mongoose.Schema({
   city: {
     type: String,
@@ -14,6 +23,11 @@ const staticDestinationLibrarySchema = new mongoose.Schema({
   summary: {
     type: String,
     default: "",
+  },
+  translations: {
+    en: { type: translationSchema },
+    es: { type: translationSchema },
+    fr: { type: translationSchema },
   },
   image_url: {
     type: String,

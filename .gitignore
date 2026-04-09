@@ -1,2 +1,16 @@
+node_modules/
+.env
+*.json
+!package.json
+!package-lock.json
+
+# Orphaned root-level files (not part of the project structure)
+/server.js
+/seed.js
+/test-db.js
+/routes/
+/models/
+/config/
+/src/
 # Local Netlify folder
 .netlify

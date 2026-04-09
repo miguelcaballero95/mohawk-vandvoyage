@@ -16,14 +16,17 @@ export const getTrips = async (origin) => {
   return data;
 }
 
+// Filters activities by cities (array), travelTypes (array), and price range
 export const getActivitiesBy = (cities, travelTypes, minPrice, maxPrice) => {
-
   const activities = getHardcodedActivities();
 
-  const response = activities.filter(activity => {
-    const isInCity = cities.length === 0 || (cities.length > 0 && cities.includes(activity.cityCode));
-    const hasTravelType = travelTypes.length === 0 || (travelTypes.length > 0 && travelTypes.some(type => activity.categories.includes(type)));
-    
+  // Flatten all cities into one array for filtering
+  const allActivities = Object.values(activities).flat();
+
+  const response = allActivities.filter(activity => {
+    const isInCity = cities.length === 0 || cities.includes(activity.cityCode);
+    const hasTravelType = travelTypes.length === 0 || travelTypes.some(type => activity.categories.includes(type));
+
     const price = parseFloat(activity.price.amount);
     const matchesMinPrice = minPrice === null || minPrice === '' || price >= parseFloat(minPrice);
     const matchesMaxPrice = maxPrice === null || maxPrice === '' || price <= parseFloat(maxPrice);
