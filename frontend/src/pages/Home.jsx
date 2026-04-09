@@ -38,7 +38,7 @@ function Home() {
         <form onSubmit={handleSubmit(handleSearch)} className='mt-12 grid grid-cols-3 gap-6 max-w-sm mx-auto lg:max-w-5xl lg:bg-white lg:p-4 lg:rounded-2xl'>
           <TravelTypeSelect control={control} />
           <DestinationSelect control={control} />
-          <TextField label="Anything else?" variant="outlined" />
+          <TextField label={t('anythingElse')} variant="outlined" />
           <button type='submit'
             className='bg-orange-primary text-white py-4 rounded-xl font-bold col-span-3 cursor-pointer hover:bg-orange-secondary transition-colors duration-300'>
             {t('surpriseMe')}
