@@ -3,13 +3,21 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { getCities } from '../../data';
 import { useState } from 'react';
 import { Controller } from 'react-hook-form';
+<<<<<<< HEAD
 import { useLanguage } from '../../context/LanguageContext';
+=======
+>>>>>>> master
 
 const cities = getCities();
 
 const DestinationSelect = ({ control }) => {
+<<<<<<< HEAD
   const [open, setOpen] = useState(false);
   const { t } = useLanguage();
+=======
+
+  const [open, setOpen] = useState(false);
+>>>>>>> master
 
   return (
     <Controller
@@ -36,9 +44,14 @@ const DestinationSelect = ({ control }) => {
               setOpen(false);
             }
           }}
+<<<<<<< HEAD
           getOptionLabel={(option) => option.label || ""}
           renderInput={(params) => (
             <TextField {...params} label={t('where')} />
+=======
+          renderInput={(params) => (
+            <TextField {...params} label="Where to?" />
+>>>>>>> master
           )}
         />
       )}
@@ -46,4 +59,8 @@ const DestinationSelect = ({ control }) => {
   );
 }
 
+<<<<<<< HEAD
 export default DestinationSelect;
+=======
+export default DestinationSelect;
+>>>>>>> master

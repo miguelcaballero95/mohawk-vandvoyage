@@ -280,11 +280,10 @@ export const Results = () => {
                 <button
                   onClick={handleSave}
                   disabled={saveLoading}
-                  className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest cursor-pointer group transition-colors ${
-                    currentTrip && savedIds.has(currentTrip.id)
+                  className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest cursor-pointer group transition-colors ${currentTrip && savedIds.has(currentTrip.id)
                       ? 'text-orange-primary'
                       : 'text-gray-400 hover:text-orange-primary'
-                  }`}
+                    }`}
                 >
                   <FiBookmark
                     size={14}

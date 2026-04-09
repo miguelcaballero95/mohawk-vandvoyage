@@ -79,9 +79,8 @@ const ResetPassword = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`bg-orange-primary text-white py-4 my-4 rounded-xl font-bold w-full transition-colors duration-300 ${
-                loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-orange-secondary'
-              }`}>
+              className={`bg-orange-primary text-white py-4 my-4 rounded-xl font-bold w-full transition-colors duration-300 ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-orange-secondary'
+                }`}>
               {loading ? 'Sending...' : t('sendResetLink')}
             </button>
           </form>

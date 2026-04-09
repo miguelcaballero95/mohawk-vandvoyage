@@ -12,3 +12,5 @@ node_modules/
 /models/
 /config/
 /src/
+# Local Netlify folder
+.netlify
