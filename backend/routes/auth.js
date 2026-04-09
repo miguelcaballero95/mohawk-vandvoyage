@@ -9,7 +9,12 @@ if (!admin.apps.length) {
   let credential;
   if (process.env.FIREBASE_SERVICE_ACCOUNT) {
     // Production: full service account JSON stored as an env variable
-    credential = admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT));
+    // Fix double-escaped newlines in private_key that occur when pasting into Render
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    if (serviceAccount.private_key) {
+      serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+    }
+    credential = admin.credential.cert(serviceAccount);
   } else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
     // Local dev: path to the JSON file
     credential = admin.credential.cert(require(path.resolve(process.env.FIREBASE_SERVICE_ACCOUNT_PATH)));
