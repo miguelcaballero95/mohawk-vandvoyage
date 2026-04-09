@@ -1,15 +1,28 @@
 import { useState } from 'react';
 import r1 from '../assets/images/results1.jpg'
 import logo from '../assets/images/logowhite.svg'
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { useLanguage } from '../context/LanguageContext';
 import { auth, googleProvider } from '../config/firebase';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 
 const Login = () => {
-  // Get translation function from language context
   const { t } = useLanguage();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/');
+    } catch (err) {
+      setError('Invalid email or password');
+    }
+  };
 
   // Handle Google sign-in using Firebase popup
   const handleGoogleSignIn = async () => {
@@ -25,11 +38,11 @@ const Login = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idToken }),
       });
-      const data = await response.json();
-      if (data.error) {
-        setError(data.error);
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
+      if (!response.ok || data.error) {
+        setError(data.error || `Server error (${response.status})`);
       } else {
-        // Successful login — redirect to home
         window.location.href = '/';
       }
     } catch (err) {
@@ -66,14 +79,17 @@ const Login = () => {
           )}
 
           {/* Email/password form */}
-          <form className="mt-4 lg:mt-8 max-w-xs mx-auto">
+          <form onSubmit={handleLogin} className="mt-4 lg:mt-8 max-w-xs mx-auto">
             <label htmlFor="user-email" className="block text-gray-600 text-sm mb-2">{t('email')}</label>
             <input
-              type="text"
+              type="email"
               id="user-email"
               name="user_email"
               className="block placeholder:text-gray-500 border border-gray-300 rounded-xl w-full py-4 px-2"
               placeholder={t('enterEmail')}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
             <label htmlFor="user-password" className="block text-gray-600 text-sm mt-4 mb-2">{t('password')}</label>
             <input
@@ -82,8 +98,12 @@ const Login = () => {
               name="user_password"
               className="block placeholder:text-gray-500 border border-gray-300 rounded-xl w-full py-4 px-2"
               placeholder={t('enterPassword')}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
             <button
+              type="submit"
               className='bg-orange-primary text-white py-4 my-4 rounded-xl font-bold w-full cursor-pointer hover:bg-orange-secondary transition-colors duration-300'>
               {t('login')}
             </button>

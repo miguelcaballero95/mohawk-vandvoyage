@@ -4,7 +4,7 @@ import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 // Firebase client configuration for VandVoyage
 // These are public client-side keys (safe to expose in frontend code)
 const firebaseConfig = {
-  apiKey: "AIzaSyBxvMGN2RpjMFTmBnT0Ey14GXCwtCNnLqY",
+  apiKey: "AIzaSyBiJXLQgLavAvPcWyJHfO0BQUEfS_606Zs", 
   authDomain: "vandvoyage-auth-demo.firebaseapp.com",
   projectId: "vandvoyage-auth-demo",
 };

@@ -1,28 +1,25 @@
 import { useNavigate } from 'react-router'
 import bgImage from '../assets/images/home-bg.jpg';
-import { getTravelTypes, getCities } from '../data';
 import { useForm } from 'react-hook-form';
+import TravelTypeSelect from '../components/home/TravelTypeSelect';
+import DestinationSelect from '../components/home/DestinationSelect';
 import { useLanguage } from '../context/LanguageContext';
+import { useFilters } from '../stores/filters.store';
 
 function Home() {
-  const cities = getCities();
-  const travelTypes = getTravelTypes();
   const navigate = useNavigate();
-  // Get translation function from language context
   const { t } = useLanguage();
+  const { toggleCities, toggleTravelTypes, clearFilters } = useFilters();
 
-  async function handleSearch(data) {
-    const searchParams = new URLSearchParams(data);
-    const queryString = searchParams.toString();
-    navigate(`/results?${queryString}`);
+  const { handleSubmit, control } = useForm();
+
+  async function handleSearch({ destination, type }) {
+    // Reset previous filters and apply the new search selection
+    clearFilters();
+    if (type) toggleTravelTypes(type);
+    if (destination) toggleCities(destination);
+    navigate(`/results`);
   }
-
-  const initialValues = {
-    type: 'adventure-travel',
-    origin: 'toronto',
-  };
-
-  const { register, handleSubmit } = useForm({ defaultValues: initialValues });
 
   return (
     <>
@@ -38,28 +35,13 @@ function Home() {
           </p>
         </div>
         <form onSubmit={handleSubmit(handleSearch)} className='mt-12 grid grid-cols-3 gap-6 max-w-sm mx-auto lg:max-w-5xl lg:bg-white lg:p-4 lg:rounded-2xl'>
+          {/* Travel type autocomplete with MUI */}
           <p className='bg-white px-3 py-4 rounded-xl col-span-3 lg:col-span-1 lg:border lg:border-gray-300'>
-            <label className='block mb-2 lg:mb-1 text-gray-500 text-sm' htmlFor="travel-type">{t('whatLookingFor')}</label>
-            <select
-              className='w-full text-blue-tertiary outline-0'
-              name="travel_type"
-              id="travel-type"
-              {...register('type', { required: "Field is required" })}
-            >
-              {/* Translate each travel type label using the translation key */}
-              {travelTypes.map(({ id }) => <option key={id} value={id}>{t(id)}</option>)}
-            </select>
+            <TravelTypeSelect control={control} />
           </p>
+          {/* Destination autocomplete with MUI */}
           <p className='bg-white px-3 py-4 rounded-xl col-span-3 lg:col-span-1 lg:border lg:border-gray-300'>
-            <label className='block mb-2 text-gray-500 text-sm' htmlFor="origin">{t('where')}</label>
-            <select
-              className='w-full text-blue-tertiary outline-0'
-              name="origin"
-              id="origin"
-              {...register('origin', { required: "Field is required" })}
-            >
-              {cities.map(({ id, city }) => <option key={id} value={id}>{city}</option>)}
-            </select>
+            <DestinationSelect control={control} />
           </p>
           <p className='bg-white px-3 py-4 rounded-xl col-span-3 lg:col-span-1 lg:border lg:border-gray-300'>
             <label className='block mb-2 text-gray-500 text-sm' htmlFor="additional-information">{t('anythingElse')}</label>

@@ -1,11 +1,18 @@
-import { FiMenu } from 'react-icons/fi'
+import { FiMenu, FiBookmark } from 'react-icons/fi'
 import logo from '../assets/images/logoblue.svg'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { useLanguage } from '../context/LanguageContext'
+import { useAuth } from '../stores/auth.store'
 
 const Nav = () => {
-  // Get translation function, current language, and language switcher from context
   const { t, language, changeLanguage, LANGUAGES, LANGUAGE_LABELS } = useLanguage();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   return (
     <header className="flex justify-between items-center max-w-7xl mx-auto p-4 md:p-8 text-blue-tertiary w-full">
@@ -38,9 +45,21 @@ const Nav = () => {
         </button>
 
         {/* Desktop nav links */}
-        <div className='hidden md:flex md:gap-4 text-lg'>
+        <div className='hidden md:flex md:items-center md:gap-4 text-lg'>
           <Link to="/" className='font-semibold'>{t('explore')}</Link>
-          <Link to="/login" className='font-semibold'>{t('signIn')}</Link>
+          {user ? (
+            <>
+              <Link to="/saved" className='flex items-center gap-1.5 font-semibold hover:text-orange-primary transition-colors' title={t('savedTrips')}>
+                <FiBookmark size={18} />
+                <span>{t('savedTrips')}</span>
+              </Link>
+              <button onClick={handleSignOut} className='font-semibold cursor-pointer hover:text-orange-primary transition-colors'>
+                {t('signOut')}
+              </button>
+            </>
+          ) : (
+            <Link to="/login" className='font-semibold'>{t('signIn')}</Link>
+          )}
         </div>
       </div>
     </header>

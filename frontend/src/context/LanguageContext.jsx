@@ -9,6 +9,7 @@ const translations = {
     // Nav
     explore: 'Explore',
     signIn: 'Sign In',
+    signOut: 'Sign Out',
 
     // Home page
     findNextAdventure: 'Find Your Next',
@@ -56,6 +57,15 @@ const translations = {
     sendResetLink: 'Send Reset Link',
     backToLogin: 'Back to Login',
 
+    // Save experience / saved trips
+    saveExperience: 'Save Experience',
+    saved: 'Saved',
+    savedTrips: 'Saved Trips',
+    noSavedTrips: 'No saved trips yet.',
+    exploreExperiences: 'Explore experiences',
+    remove: 'Remove',
+    maxSavedReached: 'Max 5 trips saved',
+
     // Filter sidebar
     travelStyle: 'Travel Style',
     priceRange: 'Price Range',
@@ -80,6 +90,7 @@ const translations = {
     // Nav
     explore: 'Explorar',
     signIn: 'Iniciar Sesion',
+    signOut: 'Cerrar Sesion',
 
     // Home page
     findNextAdventure: 'Encuentra Tu Proxima',
@@ -127,6 +138,15 @@ const translations = {
     sendResetLink: 'Enviar Enlace',
     backToLogin: 'Volver al Inicio de Sesion',
 
+    // Save experience / saved trips
+    saveExperience: 'Guardar Experiencia',
+    saved: 'Guardado',
+    savedTrips: 'Viajes Guardados',
+    noSavedTrips: 'Aun no tienes viajes guardados.',
+    exploreExperiences: 'Explorar experiencias',
+    remove: 'Eliminar',
+    maxSavedReached: 'Maximo 5 viajes guardados',
+
     // Filter sidebar
     travelStyle: 'Estilo de Viaje',
     priceRange: 'Rango de Precios',
@@ -151,6 +171,7 @@ const translations = {
     // Nav
     explore: 'Explorer',
     signIn: 'Se Connecter',
+    signOut: 'Se Deconnecter',
 
     // Home page
     findNextAdventure: 'Trouvez Votre Prochaine',
@@ -197,6 +218,15 @@ const translations = {
     resetPassword: 'Reinitialiser le Mot de Passe',
     sendResetLink: 'Envoyer le Lien',
     backToLogin: 'Retour a la Connexion',
+
+    // Save experience / saved trips
+    saveExperience: 'Sauvegarder',
+    saved: 'Sauvegarde',
+    savedTrips: 'Voyages Sauvegardes',
+    noSavedTrips: 'Aucun voyage sauvegarde.',
+    exploreExperiences: 'Explorer les experiences',
+    remove: 'Supprimer',
+    maxSavedReached: 'Maximum 5 voyages sauvegardes',
 
     // Filter sidebar
     travelStyle: 'Style de Voyage',

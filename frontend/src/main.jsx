@@ -8,6 +8,7 @@ import Layout from './layouts/Layout.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
+import SavedTrips from './pages/SavedTrips.jsx'
 import { LanguageProvider } from './context/LanguageContext.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -22,6 +23,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/saved" element={<SavedTrips />} />
           </Route>
         </Routes>
       </BrowserRouter>
